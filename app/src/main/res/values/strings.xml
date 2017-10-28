@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">LooseCalories</string>
+    <string name="about">about</string>
+    <string name="logout">logout</string>
+    <string name="open_drawer">open</string>
+    <string name="close_drawer">close</string>
 </resources>

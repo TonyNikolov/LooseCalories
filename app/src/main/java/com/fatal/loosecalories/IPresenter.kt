@@ -1,6 +1,6 @@
 package com.fatal.loosecalories
 
-import com.fatal.loosecalories.views.BasePresenter
+import com.fatal.loosecalories.views.base.BasePresenter
 
 
 /**
