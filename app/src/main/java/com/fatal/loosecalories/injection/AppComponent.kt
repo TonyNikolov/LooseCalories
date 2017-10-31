@@ -1,7 +1,9 @@
 package com.fatal.loosecalories.injection
 
 import com.fatal.loosecalories.App
-import com.fatal.loosecalories.views.MainActivity
+import com.fatal.loosecalories.IView
+import com.fatal.loosecalories.views.ChartFragment.ChartFragment
+import com.fatal.loosecalories.views.MainActivity.MainActivity
 import dagger.Component
 import javax.inject.Singleton
 
@@ -13,4 +15,5 @@ import javax.inject.Singleton
 interface AppComponent {
     fun inject(app: App)
     fun inject(mainActivity: MainActivity)
+    fun inject(chartFragment: ChartFragment)
 }

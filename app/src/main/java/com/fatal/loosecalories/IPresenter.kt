@@ -9,4 +9,8 @@ import com.fatal.loosecalories.views.base.BasePresenter
 interface IPresenter {
     interface MainActivity : BasePresenter<IView.MainActivity> {
     }
+
+    interface ChartFragment: BasePresenter<IView.ChartFragment> {
+        fun getChart()
+    }
 }

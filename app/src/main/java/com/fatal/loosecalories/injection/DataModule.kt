@@ -62,7 +62,7 @@ class DataModule {
 
     @Provides
     fun providesLocalData(context: Context): LocalData =
-            Room.databaseBuilder(context, LocalData::class.java, "LooseCalories").allowMainThreadQueries().build()
+            Room.databaseBuilder(context, LocalData::class.java, "LooseCalories").build()
 
     @Provides
     fun providesFoodDao(localData: LocalData) = localData.foodDao()

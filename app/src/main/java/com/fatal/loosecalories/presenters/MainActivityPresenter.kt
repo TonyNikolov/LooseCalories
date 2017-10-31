@@ -13,7 +13,7 @@ class MainActivityPresenter @Inject constructor(looseData: LooseData) : IPresent
         view.showMessage("Main Activity Presenter");
     }
 
-    override fun detachView(view: IView.MainActivity) {}
+    override fun detachView() {}
 
     override fun unsubscribe() {}
 }
