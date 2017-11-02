@@ -9,4 +9,5 @@ import io.reactivex.Observable
  */
 interface RemoteService {
     fun getFood(): Flowable<List<Food>>
+    fun pushFood(food:Food)
 }

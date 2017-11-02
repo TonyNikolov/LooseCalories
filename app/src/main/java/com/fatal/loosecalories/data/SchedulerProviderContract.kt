@@ -11,16 +11,11 @@ import io.reactivex.schedulers.Schedulers
 interface SchedulerContract {
     val io: Scheduler
     val ui: Scheduler
+    val diskIO: Scheduler
 }
 
 object DefaultScheduler : SchedulerContract {
     override val io: Scheduler = Schedulers.io()
     override val ui: Scheduler = AndroidSchedulers.mainThread()
-}
-
-object ImmediateScheduler : SchedulerContract {
-    val scheduler: Scheduler = ImmediateThinScheduler.INSTANCE
-
-    override val io: Scheduler = scheduler
-    override val ui: Scheduler = scheduler
+    override val diskIO: Scheduler = Schedulers.single()
 }

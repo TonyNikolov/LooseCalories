@@ -4,8 +4,11 @@ import android.arch.persistence.room.Room
 import android.content.Context
 import android.net.ConnectivityManager
 import com.fatal.loosecalories.App
+import com.fatal.loosecalories.data.DefaultScheduler
 import com.fatal.loosecalories.data.LooseData
 import com.fatal.loosecalories.data.local.LocalData
+import com.fatal.loosecalories.data.local.LocalDb
+import com.fatal.loosecalories.data.local.dao.FoodDao
 import com.fatal.loosecalories.data.remote.RemoteService
 import com.google.gson.Gson
 import dagger.Module
@@ -16,16 +19,15 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
+
 
 /**
  * Created by fatal on 10/28/2017.
  */
 @Module
 class DataModule {
-
-    @Singleton
-    @Provides
-    fun providesLooseData(localData: LocalData, remoteService: RemoteService): LooseData = LooseData(localData, remoteService)
 
     fun getOkHttpBuilder(): OkHttpClient.Builder =
             OkHttpClient.Builder()
@@ -47,6 +49,10 @@ class DataModule {
                 .build()
     }
 
+    @Singleton
+    @Provides
+    fun providesLooseData(localData: LocalData, remoteService: RemoteService): LooseData = LooseData(localData, remoteService)
+
     @Provides
     @Singleton
     fun providesRemoteService(okHttpClient: OkHttpClient, gson: Gson): RemoteService {
@@ -60,10 +66,17 @@ class DataModule {
         return retrofit.create(RemoteService::class.java)
     }
 
+    @Singleton
     @Provides
-    fun providesLocalData(context: Context): LocalData =
-            Room.databaseBuilder(context, LocalData::class.java, "LooseCalories").build()
+    fun providesLocalDb(context: Context): LocalDb {
+
+        return Room.databaseBuilder(context, LocalDb::class.java, "LooseCalories").build()
+    }
+
+    @Singleton
+    @Provides
+    fun providesLocalData(foodDao: FoodDao) = LocalData(foodDao, DefaultScheduler)
 
     @Provides
-    fun providesFoodDao(localData: LocalData) = localData.foodDao()
+    fun providesFoodDao(localDb: LocalDb) = localDb.foodDao()
 }
