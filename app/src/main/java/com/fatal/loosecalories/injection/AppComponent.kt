@@ -2,6 +2,7 @@ package com.fatal.loosecalories.injection
 
 import com.fatal.loosecalories.App
 import com.fatal.loosecalories.IView
+import com.fatal.loosecalories.views.AddDailyFoodFragment.AddDailyFoodFragment
 import com.fatal.loosecalories.views.ChartFragment.ChartFragment
 import com.fatal.loosecalories.views.MainActivity.MainActivity
 import dagger.Component
@@ -16,4 +17,5 @@ interface AppComponent {
     fun inject(app: App)
     fun inject(mainActivity: MainActivity)
     fun inject(chartFragment: ChartFragment)
+    fun inject(addDailyFoodFragment: AddDailyFoodFragment)
 }

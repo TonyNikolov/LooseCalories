@@ -3,6 +3,7 @@ package com.fatal.loosecalories.injection
 import com.fatal.loosecalories.IPresenter
 import com.fatal.loosecalories.data.DefaultScheduler
 import com.fatal.loosecalories.data.LooseData
+import com.fatal.loosecalories.presenters.AddDailyFoodFragmentPresenter
 import com.fatal.loosecalories.presenters.ChartFragmentPresenter
 import com.fatal.loosecalories.presenters.MainActivityPresenter
 import dagger.Module
@@ -16,7 +17,12 @@ class PresenterModule {
     @Provides
     fun providesMainActivityPresenter(looseData: LooseData): IPresenter.MainActivity =
             MainActivityPresenter(looseData)
+
     @Provides
     fun providesChartFragmentPresenter(looseData: LooseData): IPresenter.ChartFragment =
             ChartFragmentPresenter(looseData, DefaultScheduler)
+
+    @Provides
+    fun providesAddDailyFoodFragmentPresenter(looseData: LooseData): IPresenter.AddDailyFoodFrgment =
+            AddDailyFoodFragmentPresenter(looseData, DefaultScheduler)
 }

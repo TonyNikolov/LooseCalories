@@ -1,5 +1,6 @@
 package com.fatal.loosecalories
 
+import com.fatal.loosecalories.models.Food
 import com.fatal.loosecalories.views.base.BasePresenter
 
 
@@ -10,7 +11,11 @@ interface IPresenter {
     interface MainActivity : BasePresenter<IView.MainActivity> {
     }
 
-    interface ChartFragment: BasePresenter<IView.ChartFragment> {
+    interface ChartFragment : BasePresenter<IView.ChartFragment> {
         fun getChart()
+    }
+
+    interface AddDailyFoodFrgment : BasePresenter<IView.AddDailyFoodFragment> {
+        fun addFood(food: Food)
     }
 }

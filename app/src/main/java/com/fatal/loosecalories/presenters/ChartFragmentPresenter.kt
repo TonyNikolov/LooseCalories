@@ -1,6 +1,7 @@
 package com.fatal.loosecalories.presenters
 
 import android.graphics.Color
+import android.util.Log
 import com.fatal.loosecalories.IPresenter
 import com.fatal.loosecalories.IView
 import com.fatal.loosecalories.common.ValueFormatter
@@ -41,9 +42,12 @@ class ChartFragmentPresenter @Inject constructor(private val looseData: LooseDat
                 .observeOn(scheduler.ui)
                 .filter { it.isNotEmpty() }
                 .subscribeBy(
-                        onNext = { addFoodToBarData(it) },
-                        onError = { it.printStackTrace() },
-                        onComplete = { showChart(data) }
+                        onNext = {
+                            addFoodToBarData(it)
+                            showChart()
+                        },
+                        onError = { Log.i("asddsa", it.localizedMessage) },
+                        onComplete = { }
                 ))
     }
 
@@ -66,13 +70,65 @@ class ChartFragmentPresenter @Inject constructor(private val looseData: LooseDat
 //
 //    }
 
+    fun generateBarData() {
+
+        var proteinVals = ArrayList<BarEntry>()
+        val val1 = 120.toFloat()
+        val val2 = 160 - 120.toFloat()
+        val val3 = 0.toFloat()
+        proteinVals.add(BarEntry(1.toFloat(), floatArrayOf(val1, val2, val3)))
+
+
+        var carbVals = ArrayList<BarEntry>()
+        val carb1 = 200.toFloat()
+        val carb2 = 0.toFloat()
+        val carb3 = 40.toFloat()
+        carbVals.add(BarEntry(2.toFloat(), floatArrayOf(carb1, carb2, carb3)))
+
+
+        var fatVals = ArrayList<BarEntry>()
+        val fat1 = 85.toFloat()
+        val fat2 = 10.toFloat()
+        val fat3 = 0.toFloat()
+        fatVals.add(BarEntry(3.toFloat(), floatArrayOf(fat1, fat2, fat3)))
+
+
+        var set1: BarDataSet
+        var set2: BarDataSet
+        var set3: BarDataSet
+        set1 = BarDataSet(proteinVals, "protein intake")
+        set1.setDrawIcons(false)
+        set1.colors = getColors().toList()
+        set1.stackLabels = arrayOf("current", "left", "overeaten")
+
+        set2 = BarDataSet(carbVals, "protein intake")
+        set2.setDrawIcons(false)
+        set2.colors = getColors().toList()
+        set2.stackLabels = arrayOf("current", "left", "overeaten")
+
+        set3 = BarDataSet(fatVals, "protein intake")
+        set3.setDrawIcons(false)
+        set3.colors = getColors().toList()
+        set3.stackLabels = arrayOf("current", "left", "overeaten")
+
+        val dataSets: ArrayList<IBarDataSet> = ArrayList()
+        dataSets.add(set1)
+        dataSets.add(set2)
+        dataSets.add(set3)
+
+        data = BarData(dataSets)
+        data.setValueFormatter(ValueFormatter())
+        data.setValueTextColor(Color.WHITE)
+    }
+
+
     fun addFoodToBarData(foods: List<Food>) {
 
         var proteinVals = ArrayList<BarEntry>()
         var carbVals = ArrayList<BarEntry>()
         var fatVals = ArrayList<BarEntry>()
 
-        for(food:Food in foods){
+        for (food: Food in foods) {
             proteinVals.add(BarEntry(1.toFloat(), food.protein.toFloat()))
             carbVals.add(BarEntry(2.toFloat(), food.carbs.toFloat()))
             fatVals.add(BarEntry(3.toFloat(), food.fats.toFloat()))
@@ -103,7 +159,7 @@ class ChartFragmentPresenter @Inject constructor(private val looseData: LooseDat
         data.setValueTextColor(Color.WHITE)
     }
 
-    fun showChart(data: BarData) {
+    fun showChart() {
 
         mView?.setData(data)
     }

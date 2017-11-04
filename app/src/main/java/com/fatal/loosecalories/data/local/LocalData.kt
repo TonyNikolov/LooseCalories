@@ -4,6 +4,7 @@ import com.fatal.loosecalories.data.DefaultScheduler
 import com.fatal.loosecalories.data.local.dao.FoodDao
 import com.fatal.loosecalories.models.Food
 import io.reactivex.Flowable
+import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
 
 

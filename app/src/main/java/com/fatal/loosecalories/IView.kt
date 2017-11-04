@@ -14,6 +14,10 @@ interface IView {
     interface ChartFragment : BaseView {
         fun setData(count: BarData)
     }
+
+    interface AddDailyFoodFragment : BaseView {
+
+    }
 }
 
 

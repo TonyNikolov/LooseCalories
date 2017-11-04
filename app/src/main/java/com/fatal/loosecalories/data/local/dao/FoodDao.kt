@@ -5,6 +5,7 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
 import com.fatal.loosecalories.models.Food
 import io.reactivex.Flowable
+import io.reactivex.Single
 
 /**
  * Created by fatal on 10/28/2017.

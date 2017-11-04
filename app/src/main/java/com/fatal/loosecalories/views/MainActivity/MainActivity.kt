@@ -13,6 +13,7 @@ import com.fatal.loosecalories.IPresenter
 import com.fatal.loosecalories.IView
 import com.fatal.loosecalories.R
 import com.fatal.loosecalories.databinding.MainActivityBinding
+import com.fatal.loosecalories.views.AddDailyFoodFragment.AddDailyFoodFragment
 import com.fatal.loosecalories.views.ChartFragment.ChartFragment
 import kotlinx.android.synthetic.main.main_activity.*
 import javax.inject.Inject
@@ -64,6 +65,8 @@ class MainActivity : AppCompatActivity(), IView.MainActivity {
         val transaction: FragmentTransaction = fragmentManager.beginTransaction().add(R.id.pie_chart, ChartFragment.getInstance())
         transaction.commit()
 
+        val transaction2: FragmentTransaction = fragmentManager.beginTransaction().add(R.id.container_add_food_fragment, AddDailyFoodFragment.getInstance())
+        transaction2.commit()
     }
 
 
