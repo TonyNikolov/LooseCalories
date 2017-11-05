@@ -1,4 +1,4 @@
-package com.fatal.loosecalories.presenters
+package com.fatal.loosecalories.ui.AddDailyFoodFragment
 
 import com.fatal.loosecalories.IPresenter
 import com.fatal.loosecalories.IView

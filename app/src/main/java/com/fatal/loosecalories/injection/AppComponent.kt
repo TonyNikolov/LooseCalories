@@ -1,10 +1,9 @@
 package com.fatal.loosecalories.injection
 
 import com.fatal.loosecalories.App
-import com.fatal.loosecalories.IView
-import com.fatal.loosecalories.views.AddDailyFoodFragment.AddDailyFoodFragment
-import com.fatal.loosecalories.views.ChartFragment.ChartFragment
-import com.fatal.loosecalories.views.MainActivity.MainActivity
+import com.fatal.loosecalories.ui.AddDailyFoodFragment.AddDailyFoodFragment
+import com.fatal.loosecalories.ui.ChartFragment.ChartFragment
+import com.fatal.loosecalories.ui.MainActivity.MainActivity
 import dagger.Component
 import javax.inject.Singleton
 

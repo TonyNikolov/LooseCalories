@@ -1,4 +1,4 @@
-package com.fatal.loosecalories.views.base
+package com.fatal.loosecalories.ui.base
 
 interface BasePresenter<in V : BaseView> {
     fun detachView()

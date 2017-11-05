@@ -1,21 +1,21 @@
-package com.fatal.loosecalories.presenters
+package com.fatal.loosecalories.ui.ChartFragment
 
+import android.content.Context
 import android.graphics.Color
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import com.fatal.loosecalories.IPresenter
 import com.fatal.loosecalories.IView
+import com.fatal.loosecalories.R
 import com.fatal.loosecalories.common.ValueFormatter
 import com.fatal.loosecalories.data.DefaultScheduler
 import com.fatal.loosecalories.data.LooseData
-import com.fatal.loosecalories.extensions.addToCompositeDisposable
 import com.fatal.loosecalories.models.Food
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
-import com.github.mikephil.charting.utils.ColorTemplate
 import io.reactivex.Flowable
-import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
@@ -23,7 +23,7 @@ import javax.inject.Inject
 /**
  * Created by fatal on 10/29/2017.
  */
-class ChartFragmentPresenter @Inject constructor(private val looseData: LooseData, private val scheduler: DefaultScheduler) : IPresenter.ChartFragment {
+class ChartFragmentPresenter @Inject constructor(private val context: Context, private val looseData: LooseData, private val scheduler: DefaultScheduler) : IPresenter.ChartFragment {
 
 
     var mView: IView.ChartFragment? = null
@@ -40,7 +40,6 @@ class ChartFragmentPresenter @Inject constructor(private val looseData: LooseDat
         compositeDisposable.add(looseData.getFood()
                 .subscribeOn(scheduler.io)
                 .observeOn(scheduler.ui)
-                .filter { it.isNotEmpty() }
                 .subscribeBy(
                         onNext = {
                             addFoodToBarData(it)
@@ -54,110 +53,61 @@ class ChartFragmentPresenter @Inject constructor(private val looseData: LooseDat
     override fun getChart() {
 
     }
-//
-//
-//    override fun getChart() {
-//        getFoodLocal()
-//        looseData.getFood()
-//                .subscribeOn(scheduler.io)
-//                .observeOn(scheduler.ui)
-//                .replay()
-//                .apply {
-//                    subscribeToFoods(this)
-//                    connectableDisposable.add(connect())
-//                }
-//
-//
-//    }
 
-    fun generateBarData() {
+    fun getBarDataSet(index: Int, macroCount: Float, targetMacroCount: Float, label: String): BarDataSet {
+        val dataSet: BarDataSet
+        val macroVals = ArrayList<BarEntry>()
 
-        var proteinVals = ArrayList<BarEntry>()
-        val val1 = 120.toFloat()
-        val val2 = 160 - 120.toFloat()
-        val val3 = 0.toFloat()
-        proteinVals.add(BarEntry(1.toFloat(), floatArrayOf(val1, val2, val3)))
+        if (targetMacroCount - macroCount >= 0) {
+            val targetProteinEntry = targetMacroCount - macroCount
+            macroVals.add(BarEntry(index.toFloat(), floatArrayOf(macroCount, targetProteinEntry)))
+            dataSet = BarDataSet(macroVals, label)
+            dataSet.colors = getUnderflowColors().toList()
+        } else {
+            val overflowProteinEntry = macroCount - targetMacroCount
+            macroVals.add(BarEntry(index.toFloat(), floatArrayOf(targetMacroCount, overflowProteinEntry)))
+            dataSet = BarDataSet(macroVals, label)
+            dataSet.colors = getOverflowColors().toList()
+        }
 
+        dataSet.setDrawIcons(false)
+        dataSet.valueTextSize = 12F
+        dataSet.stackLabels = arrayOf("")
 
-        var carbVals = ArrayList<BarEntry>()
-        val carb1 = 200.toFloat()
-        val carb2 = 0.toFloat()
-        val carb3 = 40.toFloat()
-        carbVals.add(BarEntry(2.toFloat(), floatArrayOf(carb1, carb2, carb3)))
-
-
-        var fatVals = ArrayList<BarEntry>()
-        val fat1 = 85.toFloat()
-        val fat2 = 10.toFloat()
-        val fat3 = 0.toFloat()
-        fatVals.add(BarEntry(3.toFloat(), floatArrayOf(fat1, fat2, fat3)))
-
-
-        var set1: BarDataSet
-        var set2: BarDataSet
-        var set3: BarDataSet
-        set1 = BarDataSet(proteinVals, "protein intake")
-        set1.setDrawIcons(false)
-        set1.colors = getColors().toList()
-        set1.stackLabels = arrayOf("current", "left", "overeaten")
-
-        set2 = BarDataSet(carbVals, "protein intake")
-        set2.setDrawIcons(false)
-        set2.colors = getColors().toList()
-        set2.stackLabels = arrayOf("current", "left", "overeaten")
-
-        set3 = BarDataSet(fatVals, "protein intake")
-        set3.setDrawIcons(false)
-        set3.colors = getColors().toList()
-        set3.stackLabels = arrayOf("current", "left", "overeaten")
-
-        val dataSets: ArrayList<IBarDataSet> = ArrayList()
-        dataSets.add(set1)
-        dataSets.add(set2)
-        dataSets.add(set3)
-
-        data = BarData(dataSets)
-        data.setValueFormatter(ValueFormatter())
-        data.setValueTextColor(Color.WHITE)
+        return dataSet
     }
-
 
     fun addFoodToBarData(foods: List<Food>) {
 
-        var proteinVals = ArrayList<BarEntry>()
-        var carbVals = ArrayList<BarEntry>()
-        var fatVals = ArrayList<BarEntry>()
+        val targetProtein = 160F
+        val targetCarb = 240F
+        val targetFat = 90F
+
+        var proteinCount = 0F
+        var carbCount = 0F
+        var fatCount = 0F
 
         for (food: Food in foods) {
-            proteinVals.add(BarEntry(1.toFloat(), food.protein.toFloat()))
-            carbVals.add(BarEntry(2.toFloat(), food.carbs.toFloat()))
-            fatVals.add(BarEntry(3.toFloat(), food.fats.toFloat()))
+            proteinCount += food.protein.toFloat()
+            carbCount += food.carbs.toFloat()
+            fatCount += food.fats.toFloat()
         }
 
-        var set1: BarDataSet
-        var set2: BarDataSet
-        var set3: BarDataSet
-        set1 = BarDataSet(proteinVals, "protein intake")
-        set1.setDrawIcons(false)
-        set1.colors = getColors().toList()
-
-        set2 = BarDataSet(carbVals, "carb intake")
-        set2.setDrawIcons(false)
-        set2.colors = getColors().toList()
-
-        set3 = BarDataSet(fatVals, "fat intake")
-        set3.setDrawIcons(false)
-        set3.colors = getColors().toList()
+        val totalMacroCount = proteinCount + carbCount + fatCount
+        val targetMacroCount = targetProtein + targetCarb + targetFat
 
         val dataSets: ArrayList<IBarDataSet> = ArrayList()
-        dataSets.add(set1)
-        dataSets.add(set2)
-        dataSets.add(set3)
+
+        dataSets.add(getBarDataSet(1, proteinCount, targetProtein, "protein"))
+        dataSets.add(getBarDataSet(2, carbCount, targetCarb, "carb"))
+        dataSets.add(getBarDataSet(3, fatCount, targetFat, "fat"))
+        dataSets.add(getBarDataSet(4, totalMacroCount, targetMacroCount, "total"))
 
         data = BarData(dataSets)
         data.setValueFormatter(ValueFormatter())
         data.setValueTextColor(Color.WHITE)
     }
+
 
     fun showChart() {
 
@@ -219,17 +169,11 @@ class ChartFragmentPresenter @Inject constructor(private val looseData: LooseDat
         connectableDisposable.clear()
     }
 
-    private fun getColors(): IntArray {
+    private fun getUnderflowColors(): IntArray {
+        return intArrayOf(ContextCompat.getColor(context, R.color.light_green), ContextCompat.getColor(context, R.color.orange))
+    }
 
-        val stacksize = 3
-
-        // have as many colors as stack-values per entry
-        val colors = IntArray(stacksize)
-
-        for (i in colors.indices) {
-            colors[i] = ColorTemplate.MATERIAL_COLORS[i]
-        }
-
-        return colors
+    private fun getOverflowColors(): IntArray {
+        return intArrayOf(ContextCompat.getColor(context, R.color.light_green), ContextCompat.getColor(context, R.color.red_dark))
     }
 }

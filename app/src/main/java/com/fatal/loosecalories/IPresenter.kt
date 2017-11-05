@@ -1,7 +1,7 @@
 package com.fatal.loosecalories
 
 import com.fatal.loosecalories.models.Food
-import com.fatal.loosecalories.views.base.BasePresenter
+import com.fatal.loosecalories.ui.base.BasePresenter
 
 
 /**

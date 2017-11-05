@@ -1,4 +1,4 @@
-package com.fatal.loosecalories.views;
+package com.fatal.loosecalories.custom_ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;

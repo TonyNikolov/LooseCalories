@@ -1,10 +1,8 @@
-package com.fatal.loosecalories.presenters
+package com.fatal.loosecalories.ui.MainActivity
 
 import com.fatal.loosecalories.IPresenter
 import com.fatal.loosecalories.IView
 import com.fatal.loosecalories.data.LooseData
-import com.fatal.loosecalories.models.Food
-import io.reactivex.Flowable
 import javax.inject.Inject
 
 /**

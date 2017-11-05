@@ -44,7 +44,7 @@
                 <LinearLayout
                     android:id="@+id/pie_chart"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="400dp"
                     android:orientation="vertical">
 
                 </LinearLayout>
@@ -52,9 +52,8 @@
                 <LinearLayout
                     android:id="@+id/container_add_food_fragment"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
-
                 </LinearLayout>
             </LinearLayout>
 

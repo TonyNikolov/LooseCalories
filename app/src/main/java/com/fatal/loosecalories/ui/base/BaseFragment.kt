@@ -1,4 +1,4 @@
-package com.fatal.loosecalories.views.base
+package com.fatal.loosecalories.ui.base
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

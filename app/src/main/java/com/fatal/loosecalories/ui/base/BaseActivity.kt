@@ -1,4 +1,4 @@
-package com.fatal.loosecalories.views.base
+package com.fatal.loosecalories.ui.base
 
 import android.content.Context
 import android.support.v7.app.AppCompatActivity

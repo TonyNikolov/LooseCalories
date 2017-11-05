@@ -1,4 +1,4 @@
-package com.fatal.loosecalories.views.AddDailyFoodFragment
+package com.fatal.loosecalories.ui.AddDailyFoodFragment
 
 import android.app.Fragment
 import android.os.Bundle
@@ -10,7 +10,7 @@ import com.fatal.loosecalories.IPresenter
 import com.fatal.loosecalories.IView
 import com.fatal.loosecalories.R
 import com.fatal.loosecalories.models.Food
-import com.fatal.loosecalories.views.ChartFragment.ChartFragment
+import java.util.Random
 import kotlinx.android.synthetic.main.add_daily_food_fragment.*
 import javax.inject.Inject
 
@@ -43,7 +43,9 @@ class AddDailyFoodFragment : Fragment(), IView.AddDailyFoodFragment {
         super.onViewCreated(view, savedInstanceState)
 
         presenter.attachView(this)
-        btn_add_daily_food_fragment_add_food.setOnClickListener { presenter.addFood(Food("asd", 15, 15, 15)) }
+        btn_add_daily_food_fragment_add_food.setOnClickListener { 
+            presenter.addFood(Food("asd", rand(1, 30), rand(1, 30), rand(1, 30)))
+        }
     }
 
     override fun onDestroy() {
@@ -55,4 +57,9 @@ class AddDailyFoodFragment : Fragment(), IView.AddDailyFoodFragment {
 
     }
 
+    val random = Random()
+
+    fun rand(from: Int, to: Int): Int {
+        return random.nextInt(to - from) + from
+    }
 }

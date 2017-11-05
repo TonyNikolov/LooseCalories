@@ -1,7 +1,6 @@
-package com.fatal.loosecalories.views.ChartFragment
+package com.fatal.loosecalories.ui.ChartFragment
 
 import android.app.Fragment
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,10 +14,8 @@ import com.github.mikephil.charting.components.Legend
 import kotlinx.android.synthetic.main.chart_fragment.*
 import javax.inject.Inject
 import com.fatal.loosecalories.common.AxisValueFormatter
-import com.fatal.loosecalories.common.ValueFormatter
 import com.github.mikephil.charting.components.XAxis.XAxisPosition
 import com.github.mikephil.charting.data.*
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 
 
 /**
@@ -58,12 +55,9 @@ class ChartFragment : Fragment(), IView.ChartFragment {
     }
 
     private fun setupChart() {
-
-        barchart.setMaxVisibleValueCount(40)
-
         // scaling can now only be done on x- and y-axis separately
         barchart.setPinchZoom(false)
-
+        barchart.description = null
         barchart.setDrawGridBackground(false)
         barchart.setDrawBarShadow(false)
 
@@ -95,6 +89,7 @@ class ChartFragment : Fragment(), IView.ChartFragment {
 
 
     override fun setData(data: BarData) {
+        barchart.setMaxVisibleValueCount(300)
         barchart.data = data
         barchart.invalidate()
     }

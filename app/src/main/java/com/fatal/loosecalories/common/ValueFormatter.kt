@@ -15,6 +15,6 @@ class ValueFormatter : IValueFormatter {
     private val mFormat: DecimalFormat = DecimalFormat("###,###,###,##0.0")
 
     override fun getFormattedValue(value: Float, entry: Entry, dataSetIndex: Int, viewPortHandler: ViewPortHandler): String {
-        return mFormat.format(value) + " $"
+        return mFormat.format(value)
     }
 }

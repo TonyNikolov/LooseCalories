@@ -1,6 +1,6 @@
 package com.fatal.loosecalories
 
-import com.fatal.loosecalories.views.base.BaseView
+import com.fatal.loosecalories.ui.base.BaseView
 import com.github.mikephil.charting.data.BarData
 
 

@@ -1,4 +1,4 @@
-package com.fatal.loosecalories.views.MainActivity
+package com.fatal.loosecalories.ui.MainActivity
 
 import android.app.FragmentTransaction
 import android.content.pm.ActivityInfo
@@ -13,8 +13,8 @@ import com.fatal.loosecalories.IPresenter
 import com.fatal.loosecalories.IView
 import com.fatal.loosecalories.R
 import com.fatal.loosecalories.databinding.MainActivityBinding
-import com.fatal.loosecalories.views.AddDailyFoodFragment.AddDailyFoodFragment
-import com.fatal.loosecalories.views.ChartFragment.ChartFragment
+import com.fatal.loosecalories.ui.AddDailyFoodFragment.AddDailyFoodFragment
+import com.fatal.loosecalories.ui.ChartFragment.ChartFragment
 import kotlinx.android.synthetic.main.main_activity.*
 import javax.inject.Inject
 
