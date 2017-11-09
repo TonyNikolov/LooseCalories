@@ -12,7 +12,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:padding="8dp"
-        android:text="add food"
+        android:text="add dailyFood"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

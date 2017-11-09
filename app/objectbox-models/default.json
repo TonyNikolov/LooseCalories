@@ -1,0 +1,78 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:8621574801003406696",
+      "lastPropertyId": "6:7385247809813152180",
+      "name": "DailyFood",
+      "properties": [
+        {
+          "id": "1:7146221416069380424",
+          "name": "id"
+        },
+        {
+          "id": "2:1647576508964027713",
+          "name": "name"
+        },
+        {
+          "id": "3:4962158860795380686",
+          "name": "protein"
+        },
+        {
+          "id": "4:2623676656729975953",
+          "name": "carbs"
+        },
+        {
+          "id": "5:8995892443939175232",
+          "name": "fats"
+        },
+        {
+          "id": "6:7385247809813152180",
+          "name": "localDate"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:1251225187448154013",
+      "lastPropertyId": "5:6868926066029529626",
+      "name": "Food",
+      "properties": [
+        {
+          "id": "1:4135048638362153070",
+          "name": "id"
+        },
+        {
+          "id": "2:4667962579894383837",
+          "name": "name"
+        },
+        {
+          "id": "3:2348359636846443091",
+          "name": "protein"
+        },
+        {
+          "id": "4:1195622662727797492",
+          "name": "carbs"
+        },
+        {
+          "id": "5:6868926066029529626",
+          "name": "fats"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "2:1251225187448154013",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 4,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

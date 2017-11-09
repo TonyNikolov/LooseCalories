@@ -22,6 +22,7 @@ import com.github.mikephil.charting.data.*
  * Created by fatal on 10/29/2017.
  */
 class ChartFragment : Fragment(), IView.ChartFragment {
+
     @Inject
     lateinit var presenter: IPresenter.ChartFragment
 
@@ -98,4 +99,9 @@ class ChartFragment : Fragment(), IView.ChartFragment {
         Log.i("ChartFragment", message)
     }
 
+    override fun showLoading() {
+    }
+
+    override fun hideLoading() {
+    }
 }

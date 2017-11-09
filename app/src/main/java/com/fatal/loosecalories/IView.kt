@@ -1,5 +1,6 @@
 package com.fatal.loosecalories
 
+import com.fatal.loosecalories.ui.base.BaseDialogView
 import com.fatal.loosecalories.ui.base.BaseView
 import com.github.mikephil.charting.data.BarData
 
@@ -16,6 +17,10 @@ interface IView {
     }
 
     interface AddDailyFoodFragment : BaseView {
+
+    }
+
+    interface CreateDialogFragment : BaseDialogView{
 
     }
 }

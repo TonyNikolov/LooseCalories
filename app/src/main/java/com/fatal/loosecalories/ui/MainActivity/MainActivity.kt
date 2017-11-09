@@ -75,5 +75,10 @@ class MainActivity : AppCompatActivity(), IView.MainActivity {
     }
 
 
+    override fun showLoading() {
+    }
+
+    override fun hideLoading() {
+    }
 }
 

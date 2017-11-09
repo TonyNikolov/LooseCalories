@@ -1,5 +1,6 @@
 package com.fatal.loosecalories
 
+import com.fatal.loosecalories.models.DailyFood
 import com.fatal.loosecalories.models.Food
 import com.fatal.loosecalories.ui.base.BasePresenter
 
@@ -16,6 +17,10 @@ interface IPresenter {
     }
 
     interface AddDailyFoodFrgment : BasePresenter<IView.AddDailyFoodFragment> {
-        fun addFood(food: Food)
+        fun addDailyFood(dailyFood: DailyFood)
+    }
+
+    interface CreateDialogFoodFragment: BasePresenter<IView.CreateDialogFragment> {
+        fun pushFood(food: Food)
     }
 }

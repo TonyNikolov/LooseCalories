@@ -1,14 +1,13 @@
 package com.fatal.loosecalories.data.remote
 
-import com.fatal.loosecalories.models.Food
+import com.fatal.loosecalories.models.DailyFood
+import io.objectbox.query.Query
 import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.Single
 
 /**
  * Created by fatal on 10/28/2017.
  */
 interface RemoteService {
-    fun getFood(): Flowable<List<Food>>
-    fun pushFood(food:Food)
+    fun getFood(): Query<DailyFood>
+    fun pushDailyFood(dailyFood: DailyFood)
 }

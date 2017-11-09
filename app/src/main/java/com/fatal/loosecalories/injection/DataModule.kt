@@ -1,15 +1,13 @@
 package com.fatal.loosecalories.injection
 
-import android.arch.persistence.room.Room
 import android.content.Context
 import android.net.ConnectivityManager
 import com.fatal.loosecalories.App
 import com.fatal.loosecalories.data.DefaultScheduler
 import com.fatal.loosecalories.data.LooseData
 import com.fatal.loosecalories.data.local.LocalData
-import com.fatal.loosecalories.data.local.LocalDb
-import com.fatal.loosecalories.data.local.dao.FoodDao
 import com.fatal.loosecalories.data.remote.RemoteService
+import com.fatal.loosecalories.models.MyObjectBox
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -19,8 +17,6 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 
 
 /**
@@ -51,6 +47,10 @@ class DataModule {
 
     @Singleton
     @Provides
+    fun providesLocalData(context: Context): LocalData = LocalData(MyObjectBox.builder().androidContext(context).build(), DefaultScheduler);
+
+    @Singleton
+    @Provides
     fun providesLooseData(localData: LocalData, remoteService: RemoteService): LooseData = LooseData(localData, remoteService)
 
     @Provides
@@ -65,18 +65,4 @@ class DataModule {
 
         return retrofit.create(RemoteService::class.java)
     }
-
-    @Singleton
-    @Provides
-    fun providesLocalDb(context: Context): LocalDb {
-
-        return Room.databaseBuilder(context, LocalDb::class.java, "LooseCalories").build()
-    }
-
-    @Singleton
-    @Provides
-    fun providesLocalData(foodDao: FoodDao) = LocalData(foodDao, DefaultScheduler)
-
-    @Provides
-    fun providesFoodDao(localDb: LocalDb) = localDb.foodDao()
 }

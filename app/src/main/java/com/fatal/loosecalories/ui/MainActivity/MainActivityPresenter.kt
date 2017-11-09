@@ -12,10 +12,10 @@ class MainActivityPresenter @Inject constructor(val looseData: LooseData) : IPre
     override fun attachView(view: IView.MainActivity) {
         view.showMessage("Main Activity Presenter")
 //
-//        looseData.pushFood(Food("asd",15,20,25))
-//        looseData.pushFood(Food("asd",25,25,25))
-//        looseData.pushFood(Food("asd",25,15,15))
-//        looseData.pushFood(Food("asd",45,20,15))
+//        looseData.pushDailyFood(DailyFood("asd",15,20,25))
+//        looseData.pushDailyFood(DailyFood("asd",25,25,25))
+//        looseData.pushDailyFood(DailyFood("asd",25,15,15))
+//        looseData.pushDailyFood(DailyFood("asd",45,20,15))
     }
 
     override fun detachView() {}

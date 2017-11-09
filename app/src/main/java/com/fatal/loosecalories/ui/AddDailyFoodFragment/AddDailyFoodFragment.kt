@@ -9,7 +9,7 @@ import com.fatal.loosecalories.App
 import com.fatal.loosecalories.IPresenter
 import com.fatal.loosecalories.IView
 import com.fatal.loosecalories.R
-import com.fatal.loosecalories.models.Food
+import com.fatal.loosecalories.models.DailyFood
 import java.util.Random
 import kotlinx.android.synthetic.main.add_daily_food_fragment.*
 import javax.inject.Inject
@@ -18,6 +18,12 @@ import javax.inject.Inject
  * Created by fatal on 11/4/2017.
  */
 class AddDailyFoodFragment : Fragment(), IView.AddDailyFoodFragment {
+    override fun showLoading() {
+
+    }
+
+    override fun hideLoading() {
+    }
 
 
     @Inject
@@ -44,7 +50,7 @@ class AddDailyFoodFragment : Fragment(), IView.AddDailyFoodFragment {
 
         presenter.attachView(this)
         btn_add_daily_food_fragment_add_food.setOnClickListener { 
-            presenter.addFood(Food("asd", rand(1, 30), rand(1, 30), rand(1, 30)))
+            presenter.addDailyFood(DailyFood("asd", rand(1, 30).toFloat(), rand(1, 30).toFloat(), rand(1, 30).toFloat()))
         }
     }
 

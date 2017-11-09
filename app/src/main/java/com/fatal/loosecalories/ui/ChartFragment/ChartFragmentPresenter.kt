@@ -10,7 +10,8 @@ import com.fatal.loosecalories.R
 import com.fatal.loosecalories.common.ValueFormatter
 import com.fatal.loosecalories.data.DefaultScheduler
 import com.fatal.loosecalories.data.LooseData
-import com.fatal.loosecalories.models.Food
+import com.fatal.loosecalories.models.DailyFood
+import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
@@ -28,8 +29,8 @@ class ChartFragmentPresenter @Inject constructor(private val context: Context, p
 
     var mView: IView.ChartFragment? = null
 
-    var foods: ArrayList<Food>? = null
-    var foodsObservable: Flowable<List<Food>>? = null
+    var dailyFoods: ArrayList<DailyFood>? = null
+    var foodsObservable: Flowable<List<DailyFood>>? = null
 
     private lateinit var data: BarData
 
@@ -37,17 +38,21 @@ class ChartFragmentPresenter @Inject constructor(private val context: Context, p
     private val connectableDisposable = CompositeDisposable()
 
     fun getFoodLocal() {
-        compositeDisposable.add(looseData.getFood()
-                .subscribeOn(scheduler.io)
-                .observeOn(scheduler.ui)
-                .subscribeBy(
-                        onNext = {
-                            addFoodToBarData(it)
-                            showChart()
-                        },
-                        onError = { Log.i("asddsa", it.localizedMessage) },
-                        onComplete = { }
-                ))
+        looseData.getFood().subscribe().observer {
+            addFoodToBarData(it)
+            showChart()
+        }
+//        compositeDisposable.add(looseData.getFood()
+//                .subscribeOn(scheduler.io)
+//                .observeOn(scheduler.ui)
+//                .subscribeBy(
+//                        onNext = {
+//                            addFoodToBarData(it)
+//                            showChart()
+//                        },
+//                        onError = { Log.i("asddsa", it.localizedMessage) },
+//                        onComplete = { }
+//                ))
     }
 
     override fun getChart() {
@@ -72,12 +77,13 @@ class ChartFragmentPresenter @Inject constructor(private val context: Context, p
 
         dataSet.setDrawIcons(false)
         dataSet.valueTextSize = 12F
+        dataSet.form = Legend.LegendForm.NONE;
         dataSet.stackLabels = arrayOf("")
 
         return dataSet
     }
 
-    fun addFoodToBarData(foods: List<Food>) {
+    fun addFoodToBarData(dailyFoods: List<DailyFood>) {
 
         val targetProtein = 160F
         val targetCarb = 240F
@@ -87,10 +93,10 @@ class ChartFragmentPresenter @Inject constructor(private val context: Context, p
         var carbCount = 0F
         var fatCount = 0F
 
-        for (food: Food in foods) {
-            proteinCount += food.protein.toFloat()
-            carbCount += food.carbs.toFloat()
-            fatCount += food.fats.toFloat()
+        for (dailyFood: DailyFood in dailyFoods) {
+            proteinCount += dailyFood.protein.toFloat()
+            carbCount += dailyFood.carbs.toFloat()
+            fatCount += dailyFood.fats.toFloat()
         }
 
         val totalMacroCount = proteinCount + carbCount + fatCount
@@ -114,7 +120,7 @@ class ChartFragmentPresenter @Inject constructor(private val context: Context, p
         mView?.setData(data)
     }
 
-//    fun subscribeToFoods(observable: Flowable<List<Food>>) {
+//    fun subscribeToFoods(observable: Flowable<List<DailyFood>>) {
 //        foodsObservable = observable
 //
 //        mView?.let {
@@ -130,7 +136,7 @@ class ChartFragmentPresenter @Inject constructor(private val context: Context, p
 //                    }
 //                    .subscribe(
 //                            { list ->
-//                                foods?.addAll(list)
+//                                dailyFoods?.addAll(list)
 //                                generateBarData()
 //                                showChart(data)
 //                            },
@@ -152,7 +158,7 @@ class ChartFragmentPresenter @Inject constructor(private val context: Context, p
     override fun attachView(view: IView.ChartFragment) {
         mView = view
 
-//        foods?.let { l ->
+//        dailyFoods?.let { l ->
 //            addFoodToBarData(l)
 //            showChart(data)
 //        }
