@@ -4,4 +4,11 @@
     <string name="logout">logout</string>
     <string name="open_drawer">open</string>
     <string name="close_drawer">close</string>
+
+    <!--create food dialog-->
+    <string name="dialog_create_food_save">Save</string>
+
+    <!--button-->
+    <string name="later">Later</string>
+    <string name="submit">Submit</string>
 </resources>

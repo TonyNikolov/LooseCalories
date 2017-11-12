@@ -16,43 +16,32 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
-import io.reactivex.Flowable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.subscribeBy
+import io.objectbox.reactive.DataObserver
+import io.objectbox.reactive.DataSubscriptionList
 import javax.inject.Inject
+
 
 /**
  * Created by fatal on 10/29/2017.
  */
-class ChartFragmentPresenter @Inject constructor(private val context: Context, private val looseData: LooseData, private val scheduler: DefaultScheduler) : IPresenter.ChartFragment {
+class ChartFragmentPresenter @Inject constructor(
+        private val context: Context,
+        private val looseData: LooseData,
+        private val scheduler: DefaultScheduler) : IPresenter.ChartFragment {
 
 
     var mView: IView.ChartFragment? = null
-
-    var dailyFoods: ArrayList<DailyFood>? = null
-    var foodsObservable: Flowable<List<DailyFood>>? = null
-
     private lateinit var data: BarData
+    private val subscriptions: DataSubscriptionList = DataSubscriptionList()
 
-    private val compositeDisposable = CompositeDisposable()
-    private val connectableDisposable = CompositeDisposable()
+    private val dailyFoodObserver: DataObserver<List<DailyFood>> = DataObserver {
+        addFoodToBarData(it)
+        showChart()
+    }
+
 
     fun getFoodLocal() {
-        looseData.getFood().subscribe().observer {
-            addFoodToBarData(it)
-            showChart()
-        }
-//        compositeDisposable.add(looseData.getFood()
-//                .subscribeOn(scheduler.io)
-//                .observeOn(scheduler.ui)
-//                .subscribeBy(
-//                        onNext = {
-//                            addFoodToBarData(it)
-//                            showChart()
-//                        },
-//                        onError = { Log.i("asddsa", it.localizedMessage) },
-//                        onComplete = { }
-//                ))
+        looseData.getFood().subscribe(subscriptions).observer(dailyFoodObserver)
     }
 
     override fun getChart() {
@@ -77,13 +66,14 @@ class ChartFragmentPresenter @Inject constructor(private val context: Context, p
 
         dataSet.setDrawIcons(false)
         dataSet.valueTextSize = 12F
-        dataSet.form = Legend.LegendForm.NONE;
+        dataSet.form = Legend.LegendForm.NONE
         dataSet.stackLabels = arrayOf("")
 
         return dataSet
     }
 
     fun addFoodToBarData(dailyFoods: List<DailyFood>) {
+        Log.i("dailyFoodsCount", dailyFoods.size.toString())
 
         val targetProtein = 160F
         val targetCarb = 240F
@@ -120,59 +110,18 @@ class ChartFragmentPresenter @Inject constructor(private val context: Context, p
         mView?.setData(data)
     }
 
-//    fun subscribeToFoods(observable: Flowable<List<DailyFood>>) {
-//        foodsObservable = observable
-//
-//        mView?.let {
-//            //            it.setLoadingIndicatorVisible(true)
-//            observable
-//                    .doOnError { _ ->
-//                        //                        it.setLoadingIndicatorVisible(false)
-//                        foodsObservable = null
-//                    }
-//                    .doOnComplete {
-//                        //                        it.setLoadingIndicatorVisible(false)
-//                        foodsObservable = null
-//                    }
-//                    .subscribe(
-//                            { list ->
-//                                dailyFoods?.addAll(list)
-//                                generateBarData()
-//                                showChart(data)
-//                            },
-//                            { e ->
-//                                //                                when (e) {
-////                                    is NoNetworkException -> view?.showNoConnectivityError()
-////                                    else -> {
-////                                        Timber.e(e)
-////                                        view?.showUnknownError()
-////                                    }
-////                                }
-//                            }
-//                    )
-//                    .addToCompositeDisposable(compositeDisposable)
-//        }
-//    }
-
-
     override fun attachView(view: IView.ChartFragment) {
         mView = view
-
-//        dailyFoods?.let { l ->
-//            addFoodToBarData(l)
-//            showChart(data)
-//        }
         getFoodLocal()
 
     }
 
     override fun detachView() {
         mView = null
-        compositeDisposable.clear()
+        subscriptions.cancel()
     }
 
     override fun unsubscribe() {
-        connectableDisposable.clear()
     }
 
     private fun getUnderflowColors(): IntArray {

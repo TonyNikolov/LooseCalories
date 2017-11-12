@@ -154,4 +154,22 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:background">@drawable/button_primary_bg</item>
     </style>
+
+    <style name="CreateFoodDialog">
+        <item name="android:textColor">@color/google</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginBottom">15dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.Text.Regular</item>
+    </style>
+
+    <style name="CreateFoodDialog.Header" parent="CreateFoodDialog">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textAppearance">@style/TextAppearance.Text.Bold</item>
+    </style>
+    <style name="CreateFoodDialog.EditText" parent="CreateFoodDialog">
+
+    </style>
 </resources>

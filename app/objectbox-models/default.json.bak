@@ -37,7 +37,7 @@
     },
     {
       "id": "2:1251225187448154013",
-      "lastPropertyId": "8:5680873222337246361",
+      "lastPropertyId": "7:7221367966098550685",
       "name": "Food",
       "properties": [
         {
@@ -63,10 +63,6 @@
         {
           "id": "7:7221367966098550685",
           "name": "quantity"
-        },
-        {
-          "id": "8:5680873222337246361",
-          "name": "measurementUnitType"
         }
       ],
       "relations": []

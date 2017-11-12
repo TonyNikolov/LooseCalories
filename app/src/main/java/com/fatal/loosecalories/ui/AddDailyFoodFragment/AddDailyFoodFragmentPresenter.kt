@@ -31,6 +31,7 @@ class AddDailyFoodFragmentPresenter
 
     override fun addDailyFood(dailyFood: DailyFood) {
         looseData.pushDailyFood(dailyFood)
+        scheduler.io
     }
 
 }

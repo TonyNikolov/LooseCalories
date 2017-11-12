@@ -6,6 +6,7 @@ import com.fatal.loosecalories.data.DefaultScheduler
 import com.fatal.loosecalories.data.LooseData
 import com.fatal.loosecalories.ui.AddDailyFoodFragment.AddDailyFoodFragmentPresenter
 import com.fatal.loosecalories.ui.ChartFragment.ChartFragmentPresenter
+import com.fatal.loosecalories.ui.CreateFoodDialogFragment.CreateFoodDialogFragmentPresenter
 import com.fatal.loosecalories.ui.MainActivity.MainActivityPresenter
 import dagger.Module
 import dagger.Provides
@@ -26,4 +27,8 @@ class PresenterModule(private val contex: Context) {
     @Provides
     fun providesAddDailyFoodFragmentPresenter(looseData: LooseData): IPresenter.AddDailyFoodFrgment =
             AddDailyFoodFragmentPresenter(looseData, DefaultScheduler)
+
+    @Provides
+    fun providesCreateFoodDialogFragment(looseData: LooseData): IPresenter.CreateDialogFoodFragment =
+            CreateFoodDialogFragmentPresenter(looseData,DefaultScheduler)
 }

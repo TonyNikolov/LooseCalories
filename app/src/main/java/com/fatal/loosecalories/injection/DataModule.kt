@@ -3,7 +3,6 @@ package com.fatal.loosecalories.injection
 import android.content.Context
 import android.net.ConnectivityManager
 import com.fatal.loosecalories.App
-import com.fatal.loosecalories.data.DefaultScheduler
 import com.fatal.loosecalories.data.LooseData
 import com.fatal.loosecalories.data.local.LocalData
 import com.fatal.loosecalories.data.remote.RemoteService
@@ -47,7 +46,7 @@ class DataModule {
 
     @Singleton
     @Provides
-    fun providesLocalData(context: Context): LocalData = LocalData(MyObjectBox.builder().androidContext(context).build(), DefaultScheduler);
+    fun providesLocalData(context: Context): LocalData = LocalData(MyObjectBox.builder().androidContext(context).build())
 
     @Singleton
     @Provides

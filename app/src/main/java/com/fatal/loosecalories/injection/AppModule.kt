@@ -2,6 +2,8 @@ package com.fatal.loosecalories.injection
 
 import android.content.Context
 import com.fatal.loosecalories.App
+import com.fatal.loosecalories.Validator
+import com.fatal.loosecalories.data.DefaultScheduler
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -21,6 +23,12 @@ internal class AppModule(private val app: App) {
     @Provides
     @Singleton
     fun providesApplicationContext(): Context = app
+
+    @Provides
+    fun providesValidator(): Validator = Validator()
+
+    @Provides
+    fun providesSchedulers(): DefaultScheduler = DefaultScheduler
 
 
     @Provides

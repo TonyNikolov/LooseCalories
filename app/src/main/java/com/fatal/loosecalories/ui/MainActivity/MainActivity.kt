@@ -5,7 +5,6 @@ import android.content.pm.ActivityInfo
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
 import com.fatal.loosecalories.App
@@ -15,11 +14,13 @@ import com.fatal.loosecalories.R
 import com.fatal.loosecalories.databinding.MainActivityBinding
 import com.fatal.loosecalories.ui.AddDailyFoodFragment.AddDailyFoodFragment
 import com.fatal.loosecalories.ui.ChartFragment.ChartFragment
+import com.fatal.loosecalories.ui.CreateFoodDialogFragment.CreateFoodDialogFragment
+import com.fatal.loosecalories.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.main_activity.*
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity(), IView.MainActivity {
+class MainActivity : BaseActivity(), IView.MainActivity {
 
     @Inject
     lateinit var presenter: IPresenter.MainActivity
@@ -67,6 +68,8 @@ class MainActivity : AppCompatActivity(), IView.MainActivity {
 
         val transaction2: FragmentTransaction = fragmentManager.beginTransaction().add(R.id.container_add_food_fragment, AddDailyFoodFragment.getInstance())
         transaction2.commit()
+
+        CreateFoodDialogFragment.getInstance().show(supportFragmentManager)
     }
 
 

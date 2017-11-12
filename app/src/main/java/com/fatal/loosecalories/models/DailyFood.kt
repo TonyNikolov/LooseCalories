@@ -13,6 +13,8 @@ data class DailyFood(var name: String,
                      var carbs: Float,
                      var fats: Float,
                      var localDate: Date = Date()) {
+
     @Id
     var id: Long = 0
+
 }
