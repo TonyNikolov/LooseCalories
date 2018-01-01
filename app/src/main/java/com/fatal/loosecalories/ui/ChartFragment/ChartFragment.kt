@@ -1,21 +1,28 @@
 package com.fatal.loosecalories.ui.ChartFragment
 
-import android.app.Fragment
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.fatal.loosecalories.App
-import com.fatal.loosecalories.IPresenter
 import com.fatal.loosecalories.IView
 import com.fatal.loosecalories.R
-import com.github.mikephil.charting.components.Legend
-import kotlinx.android.synthetic.main.chart_fragment.*
-import javax.inject.Inject
+import com.fatal.loosecalories.Utils.Util
 import com.fatal.loosecalories.common.AxisValueFormatter
+import com.fatal.loosecalories.models.ChartFragmentUiModel
+import com.fatal.loosecalories.models.UiModels
+import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis.XAxisPosition
-import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.data.BarData
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.chart_fragment.*
+import kotlinx.android.synthetic.main.dialog_create_food_fragment.*
+import javax.inject.Inject
 
 
 /**
@@ -23,8 +30,11 @@ import com.github.mikephil.charting.data.*
  */
 class ChartFragment : Fragment(), IView.ChartFragment {
 
+    lateinit var mPresenter: ChartFragmentPresenter
+    private val compositeDisposable = CompositeDisposable()
+
     @Inject
-    lateinit var presenter: IPresenter.ChartFragment
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     companion object {
         fun getInstance(): ChartFragment = ChartFragment()
@@ -42,18 +52,38 @@ class ChartFragment : Fragment(), IView.ChartFragment {
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
-        presenter.attachView(this)
+        App.graph.inject(this)
         setupChart()
-        presenter.getChart()
+        mPresenter = ViewModelProviders.of(this, viewModelFactory).get(ChartFragmentPresenter::class.java)
+
+
+        mPresenter.getChart()
+        // TODO Subscribe to chart instead
+        compositeDisposable.add(mPresenter.uiModelObservable.observeOn(AndroidSchedulers.mainThread()).subscribe(this::render))
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
+    private fun render(uiModel: ChartFragmentUiModel) {
+        if (uiModel.inProgress) {
+            showLoading()
+        } else {
+            hideLoading()
+        }
+
+//        btn_dialog_create_food_save.isEnabled = !uiModel.inProgress
+
+        if (uiModel.error != null) {
+            uiModel.error.message?.let { showMessage(it) }
+        }
+
+        if (uiModel.dailyFoods != null) {
+            setData(uiModel.dailyFoods)
+        }
+
     }
+
 
     private fun setupChart() {
         // scaling can now only be done on x- and y-axis separately
@@ -85,9 +115,7 @@ class ChartFragment : Fragment(), IView.ChartFragment {
         l.formSize = 8f
         l.formToTextSpace = 4f
         l.xEntrySpace = 6f
-
     }
-
 
     override fun setData(data: BarData) {
         barchart.setMaxVisibleValueCount(300)

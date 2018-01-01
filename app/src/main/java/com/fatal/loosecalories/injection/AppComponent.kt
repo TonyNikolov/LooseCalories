@@ -12,7 +12,7 @@ import javax.inject.Singleton
  * Created by fatal on 10/28/2017.
  */
 @Singleton
-@Component(modules = arrayOf(AppModule::class, DataModule::class, PresenterModule::class))
+@Component(modules = arrayOf(AppModule::class, DataModule::class))
 interface AppComponent {
     fun inject(app: App)
     fun inject(mainActivity: MainActivity)

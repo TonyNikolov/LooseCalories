@@ -1,29 +1,35 @@
 package com.fatal.loosecalories.ui.MainActivity
 
-import android.app.FragmentTransaction
+import android.arch.lifecycle.ViewModelProvider
 import android.content.pm.ActivityInfo
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.ActionBarDrawerToggle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.fatal.loosecalories.App
-import com.fatal.loosecalories.IPresenter
 import com.fatal.loosecalories.IView
 import com.fatal.loosecalories.R
 import com.fatal.loosecalories.databinding.MainActivityBinding
 import com.fatal.loosecalories.ui.AddDailyFoodFragment.AddDailyFoodFragment
 import com.fatal.loosecalories.ui.ChartFragment.ChartFragment
 import com.fatal.loosecalories.ui.CreateFoodDialogFragment.CreateFoodDialogFragment
+import com.fatal.loosecalories.ui.CreateFoodDialogFragment.CreateFoodDialogFragmentPresenter
 import com.fatal.loosecalories.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.main_activity.*
 import javax.inject.Inject
 
 
+
 class MainActivity : BaseActivity(), IView.MainActivity {
 
+    lateinit var presenter: CreateFoodDialogFragmentPresenter
+
     @Inject
-    lateinit var presenter: IPresenter.MainActivity
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     lateinit var binding: MainActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +40,6 @@ class MainActivity : BaseActivity(), IView.MainActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.main_activity)
 
         App.graph.inject(this)
-        presenter.attachView(this)
 
         setupUI()
     }
@@ -42,6 +47,19 @@ class MainActivity : BaseActivity(), IView.MainActivity {
     private fun setupUI() {
         setSupportActionBar(toolbar)
         // refer the navigation view of the xml
+
+        setupDrawer()
+
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction().add(R.id.pie_chart, ChartFragment.getInstance())
+        transaction.commit()
+
+        val transaction2: FragmentTransaction = supportFragmentManager.beginTransaction().add(R.id.container_add_food_fragment, AddDailyFoodFragment.getInstance())
+        transaction2.commit()
+
+        CreateFoodDialogFragment.getInstance().show(supportFragmentManager)
+    }
+
+    private fun setupDrawer() {
         navigation_view.setNavigationItemSelectedListener { menuItem ->
             val id = menuItem.itemId
             when (id) {
@@ -63,25 +81,19 @@ class MainActivity : BaseActivity(), IView.MainActivity {
 
         drawer_view.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
-        val transaction: FragmentTransaction = fragmentManager.beginTransaction().add(R.id.pie_chart, ChartFragment.getInstance())
-        transaction.commit()
-
-        val transaction2: FragmentTransaction = fragmentManager.beginTransaction().add(R.id.container_add_food_fragment, AddDailyFoodFragment.getInstance())
-        transaction2.commit()
-
-        CreateFoodDialogFragment.getInstance().show(supportFragmentManager)
     }
-
 
     override fun showMessage(message: String) {
-        Log.i("MainActivity", message)
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
     }
 
-
     override fun showLoading() {
+//        pb_activity_main.visibility = View.VISIBLE
+        Log.i("MainActivity","showLoading")
     }
 
     override fun hideLoading() {
+        pb_activity_main.visibility = View.GONE
     }
 }
 

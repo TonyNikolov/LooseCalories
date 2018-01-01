@@ -1,10 +1,10 @@
 package com.fatal.loosecalories.data.local
 
 import android.util.Log
-import com.fatal.loosecalories.models.DailyFood
-import com.fatal.loosecalories.models.DailyFood_
-import com.fatal.loosecalories.models.Food
-import com.fatal.loosecalories.models.Food_
+import com.fatal.loosecalories.models.entities.DailyFood
+import com.fatal.loosecalories.models.entities.DailyFood_
+import com.fatal.loosecalories.models.entities.Food
+import com.fatal.loosecalories.models.entities.Food_
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.objectbox.query.Query
@@ -20,29 +20,50 @@ class LocalData(val boxStore: BoxStore) {
     var foodStore: Box<Food> = boxStore.boxFor(Food::class.java)
 
     fun getTodaysDailyFoods(): Query<DailyFood> {
-        return dailyFoodStore.query().between(DailyFood_.localDate, getYesterday(), getTomorrow()).build()
+        Log.i("getTodaysDailyFoods", dailyFoodStore.count().toString())
+
+        val res = dailyFoodStore.query().equal(DailyFood_.name, "asd").build()
+
+        return res
     }
 
-    fun pushDailyFood(dailyFood: DailyFood) {
-        var id = dailyFoodStore.put(dailyFood)
-        Log.i("dailyFoodSaved", id.toString())
+    fun pushDailyFood(dailyFood: DailyFood): Flowable<Long> {
+        return Flowable.fromCallable({
+            val t = Thread.currentThread()
+            val name = t.name
+            Log.i("thread :", name)
+
+            val id = dailyFoodStore.put(dailyFood)
+            Log.i("pushDailyFood", id.toString())
+
+            id
+        })
     }
 
     fun pushFood(food: Food): Flowable<Long> {
-        if (!foodExists(food.name)) {
-            val id = foodStore.put(food)
-            Log.i("food", id.toString())
-            return Flowable.just(id)
-        } else {
-            val error: String = "food with ${food.name} exists"
-            Log.i(error, food.name)
-            return Flowable.error(Throwable(error))
-        }
+        return Flowable.fromCallable({
+            val t = Thread.currentThread()
+            val name = t.name
+            Log.i("thread :", name)
+
+
+            if (!foodExists(food.name)) {
+                val id = foodStore.put(food)
+                Log.i("food", id.toString())
+                id
+            } else {
+                val error = "food with ${food.name} exists"
+                Log.i(error, food.name)
+                throw Throwable(error)
+            }
+
+        })
+
     }
 
     fun foodExists(name: String): Boolean {
-        val lstt: List<Food> = foodStore.query().equal(Food_.name,name).build().find()
-        return lstt.size>0
+        val lstt: List<Food> = foodStore.query().equal(Food_.name, name).build().find()
+        return lstt.size > 0
     }
 
     private fun getYesterday(): Date {

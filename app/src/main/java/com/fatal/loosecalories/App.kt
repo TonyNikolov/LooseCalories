@@ -25,8 +25,8 @@ class App : Application() {
                 .builder()
                 .appModule(AppModule(this))
                 .dataModule(DataModule())
-                .presenterModule(PresenterModule(this))
                 .build()
+
         graph.inject(this)
     }
 

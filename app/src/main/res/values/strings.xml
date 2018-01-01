@@ -11,4 +11,15 @@
     <!--button-->
     <string name="later">Later</string>
     <string name="submit">Submit</string>
+    <string name="et_dialog_create_food_fragment_calories_default">0.0</string>
+    <string name="et_dialog_create_food_fragment_calories_hint">Calories</string>
+    <string name="et_dialog_create_food_fragment_protein_default">0</string>
+    <string name="et_dialog_create_food_fragment_protein_hint">Protein</string>
+    <string name="et_dialog_create_food_fragment_fats_default">0</string>
+    <string name="et_dialog_create_food_fragment_fats_hint">Fats</string>
+    <string name="et_dialog_create_food_fragment_carbs_default">0</string>
+    <string name="et_dialog_create_food_fragment_carbs_hint">Carbs</string>
+    <string name="et_dialog_create_food_fragment_quantity_hint">Quantity</string>
+    <string name="et_dialog_create_food_fragment_name_hint">Name</string>
+    <string name="tv_dialog_create_food_fragment_header">Save your own food</string>
 </resources>

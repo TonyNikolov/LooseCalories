@@ -1,4 +1,4 @@
-package com.fatal.loosecalories.models
+package com.fatal.loosecalories.models.entities
 
 import com.fatal.loosecalories.models.enums.MeasurementUnitType
 import com.fatal.loosecalories.models.enums.MeasurementUnitTypeConverter

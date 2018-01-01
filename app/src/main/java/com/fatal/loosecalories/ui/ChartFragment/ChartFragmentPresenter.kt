@@ -5,12 +5,16 @@ import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import com.fatal.loosecalories.IPresenter
-import com.fatal.loosecalories.IView
 import com.fatal.loosecalories.R
+import com.fatal.loosecalories.Utils.Util
 import com.fatal.loosecalories.common.ValueFormatter
 import com.fatal.loosecalories.data.DefaultScheduler
 import com.fatal.loosecalories.data.LooseData
-import com.fatal.loosecalories.models.DailyFood
+import com.fatal.loosecalories.models.*
+import com.fatal.loosecalories.models.entities.DailyFood
+import com.fatal.loosecalories.models.GetDailyFoodResult
+import com.fatal.loosecalories.models.Results
+import com.fatal.loosecalories.ui.base.BasePresenter
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -18,6 +22,9 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import io.objectbox.reactive.DataObserver
 import io.objectbox.reactive.DataSubscriptionList
+import io.reactivex.Flowable
+import io.reactivex.FlowableTransformer
+import io.reactivex.processors.PublishProcessor
 import javax.inject.Inject
 
 
@@ -27,25 +34,60 @@ import javax.inject.Inject
 class ChartFragmentPresenter @Inject constructor(
         private val context: Context,
         private val looseData: LooseData,
-        private val scheduler: DefaultScheduler) : IPresenter.ChartFragment {
+        private val scheduler: DefaultScheduler) : BasePresenter(), IPresenter.ChartFragment {
 
-
-    var mView: IView.ChartFragment? = null
-    private lateinit var data: BarData
+    private val BASIC_TAG = ChartFragmentPresenter::javaClass.name
     private val subscriptions: DataSubscriptionList = DataSubscriptionList()
+    private var currentState = ChartFragmentUiModel(null, false, null)
+    private val uiEvents: PublishProcessor<Events> = PublishProcessor.create<Events>()
 
     private val dailyFoodObserver: DataObserver<List<DailyFood>> = DataObserver {
-        addFoodToBarData(it)
-        showChart()
+        //        addFoodToBarData(it)
+
+        Log.i("dailyFoodsCount", " result")
+        uiEvents.onNext(GetFoodEvent(it))
+//        showChart()
     }
 
+    private val uiEventTransformer: FlowableTransformer<Events, ChartFragmentUiModel>
+
+    init {
+        uiEventTransformer = FlowableTransformer { event ->
+            event.publish { shared ->
+                shared.ofType(GetFoodEvent::class.java)
+                        .compose(pushFoodTransformer)
+                        .scan(currentState, { previous, result ->
+                            stateReducer(previous, result)
+                        })
+            }
+        }
+    }
+
+    private val pushFoodTransformer: FlowableTransformer<GetFoodEvent, Results> = FlowableTransformer { event ->
+        val TAG = Util.stringsToPath(BASIC_TAG, "pushFoodTransformer")
+        event.takeWhile { Util.isListNotEmpty(it.dailyFoods) }
+                .map { addFoodToBarData(it.dailyFoods) }
+                .flatMap {
+                    Flowable.just(GetDailyFoodResult(dailyFoods = it))
+                }
+
+    }
+
+    val uiModelObservable: Flowable<ChartFragmentUiModel>
+    init {
+        val TAG = Util.stringsToPath(BASIC_TAG, "uiModelObservable")
+        uiModelObservable =
+                uiEvents.compose(uiEventTransformer)
+                        .replay(1)
+                        .autoConnect()
+    }
 
     fun getFoodLocal() {
         looseData.getFood().subscribe(subscriptions).observer(dailyFoodObserver)
     }
 
     override fun getChart() {
-
+        getFoodLocal()
     }
 
     fun getBarDataSet(index: Int, macroCount: Float, targetMacroCount: Float, label: String): BarDataSet {
@@ -72,8 +114,9 @@ class ChartFragmentPresenter @Inject constructor(
         return dataSet
     }
 
-    fun addFoodToBarData(dailyFoods: List<DailyFood>) {
+    fun addFoodToBarData(dailyFoods: List<DailyFood>): BarData {
         Log.i("dailyFoodsCount", dailyFoods.size.toString())
+
 
         val targetProtein = 160F
         val targetCarb = 240F
@@ -84,9 +127,9 @@ class ChartFragmentPresenter @Inject constructor(
         var fatCount = 0F
 
         for (dailyFood: DailyFood in dailyFoods) {
-            proteinCount += dailyFood.protein.toFloat()
-            carbCount += dailyFood.carbs.toFloat()
-            fatCount += dailyFood.fats.toFloat()
+            proteinCount += dailyFood.protein
+            carbCount += dailyFood.carbs
+            fatCount += dailyFood.fats
         }
 
         val totalMacroCount = proteinCount + carbCount + fatCount
@@ -99,30 +142,43 @@ class ChartFragmentPresenter @Inject constructor(
         dataSets.add(getBarDataSet(3, fatCount, targetFat, "fat"))
         dataSets.add(getBarDataSet(4, totalMacroCount, targetMacroCount, "total"))
 
-        data = BarData(dataSets)
+
+        val data = BarData(dataSets)
         data.setValueFormatter(ValueFormatter())
         data.setValueTextColor(Color.WHITE)
+
+        return data
+    }
+
+    private fun stateReducer(previousState: ChartFragmentUiModel, result: Results): ChartFragmentUiModel {
+        val TAG = Util.stringsToPath(BASIC_TAG, "stateReducer")
+        when (result) {
+            is GetDailyFoodResult -> {
+                currentState = previousState.copy(
+                        dailyFoods = result.dailyFoods,
+                        inProgress = result.inProgress,
+                        error = result.error)
+            }
+        }
+        return currentState
     }
 
 
     fun showChart() {
 
-        mView?.setData(data)
+//        mView?.setData(data)
     }
-
-    override fun attachView(view: IView.ChartFragment) {
-        mView = view
-        getFoodLocal()
-
-    }
-
-    override fun detachView() {
-        mView = null
-        subscriptions.cancel()
-    }
-
-    override fun unsubscribe() {
-    }
+//
+//    override fun attachView(view: IView.ChartFragment) {
+////        mView = view
+////        getFoodLocal()
+//
+//    }
+//
+//    override fun detachView() {
+////        mView = null
+////        subscriptions.cancel()
+//    }
 
     private fun getUnderflowColors(): IntArray {
         return intArrayOf(ContextCompat.getColor(context, R.color.light_green), ContextCompat.getColor(context, R.color.orange))

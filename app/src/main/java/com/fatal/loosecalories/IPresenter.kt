@@ -1,26 +1,26 @@
 package com.fatal.loosecalories
 
-import com.fatal.loosecalories.models.DailyFood
-import com.fatal.loosecalories.models.Food
-import com.fatal.loosecalories.ui.base.BasePresenter
+import com.fatal.loosecalories.models.PushDailyFoodEvent
+import com.fatal.loosecalories.models.PushFoodEvent
+import com.fatal.loosecalories.models.entities.DailyFood
 
 
 /**
  * Created by fatal on 10/28/2017.
  */
 interface IPresenter {
-    interface MainActivity : BasePresenter<IView.MainActivity> {
+    interface MainActivity {
     }
 
-    interface ChartFragment : BasePresenter<IView.ChartFragment> {
+    interface ChartFragment {
         fun getChart()
     }
 
-    interface AddDailyFoodFrgment : BasePresenter<IView.AddDailyFoodFragment> {
-        fun addDailyFood(dailyFood: DailyFood)
+    interface AddDailyFoodFrgment {
+        fun pushDailyFood(dailyFoodEvent: PushDailyFoodEvent)
     }
 
-    interface CreateDialogFoodFragment: BasePresenter<IView.CreateDialogFragment> {
-        fun pushFood(food: Food)
+    interface CreateDialogFoodFragment {
+        fun pushFood(pushFoodEvent: PushFoodEvent)
     }
 }

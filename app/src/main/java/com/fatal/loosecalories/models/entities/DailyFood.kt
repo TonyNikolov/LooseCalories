@@ -1,4 +1,4 @@
-package com.fatal.loosecalories.models
+package com.fatal.loosecalories.models.entities
 
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id

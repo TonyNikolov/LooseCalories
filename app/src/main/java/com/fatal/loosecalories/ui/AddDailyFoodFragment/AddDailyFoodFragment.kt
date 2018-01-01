@@ -1,33 +1,39 @@
 package com.fatal.loosecalories.ui.AddDailyFoodFragment
 
-import android.app.Fragment
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.fatal.loosecalories.App
-import com.fatal.loosecalories.IPresenter
 import com.fatal.loosecalories.IView
 import com.fatal.loosecalories.R
-import com.fatal.loosecalories.models.DailyFood
-import java.util.Random
+import com.fatal.loosecalories.Utils.LogUtils
+import com.fatal.loosecalories.models.AddDailyFoodFragmentUiModel
+import com.fatal.loosecalories.models.PushDailyFoodEvent
+import com.fatal.loosecalories.models.entities.DailyFood
+import com.fatal.loosecalories.ui.base.BaseFragment
+import com.jakewharton.rxbinding2.view.clicks
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.add_daily_food_fragment.*
+import kotlinx.android.synthetic.main.dialog_create_food_fragment.*
+import java.util.*
 import javax.inject.Inject
 
 /**
  * Created by fatal on 11/4/2017.
  */
-class AddDailyFoodFragment : Fragment(), IView.AddDailyFoodFragment {
-    override fun showLoading() {
+class AddDailyFoodFragment : BaseFragment(), IView.AddDailyFoodFragment {
+    private val BASIC_TAG = AddDailyFoodFragment::javaClass.name
 
-    }
-
-    override fun hideLoading() {
-    }
-
+    lateinit var presenter: AddDailyFoodFragmentPresenter
+    private val compositeDisposable = CompositeDisposable()
 
     @Inject
-    lateinit var presenter: IPresenter.AddDailyFoodFrgment
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     companion object {
         fun getInstance(): AddDailyFoodFragment = AddDailyFoodFragment()
@@ -45,22 +51,50 @@ class AddDailyFoodFragment : Fragment(), IView.AddDailyFoodFragment {
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
-        presenter.attachView(this)
-        btn_add_daily_food_fragment_add_food.setOnClickListener { 
-            presenter.addDailyFood(DailyFood("asd", rand(1, 30).toFloat(), rand(1, 30).toFloat(), rand(1, 30).toFloat()))
+//        App.graph.inject(this)
+
+        presenter = ViewModelProviders.of(this, viewModelFactory).get(AddDailyFoodFragmentPresenter::class.java)
+
+
+        val uiEvents: Observable<PushDailyFoodEvent> = btn_add_daily_food_fragment_add_food
+                .clicks()
+                .takeWhile { true }
+                .map {
+                    LogUtils.log(BASIC_TAG, "map btnSaveFood clicks()")
+                    PushDailyFoodEvent(dailyFood = DailyFood("asd", rand(1, 30).toFloat(), rand(1, 30).toFloat(), rand(1, 30).toFloat()))
+                }
+
+        compositeDisposable.add(uiEvents.subscribe { presenter.pushDailyFood(it) })
+        // TODO
+        compositeDisposable.add(presenter.uiModelObservable.observeOn(AndroidSchedulers.mainThread()).subscribe(this::render))
+    }
+
+
+    private fun render(uiModel: AddDailyFoodFragmentUiModel) {
+        if (uiModel.inProgress) {
+            showLoading()
+        } else {
+            hideLoading()
         }
+
+//        btn_dialog_create_food_save.isEnabled = !uiModel.inProgress
+
+        if (uiModel.error != null) {
+            uiModel.error.message?.let { showMessage(it) }
+        } else if (uiModel.id != null) {
+            showMessage(uiModel.id.toString())
+        }
+
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
+    override fun showLoading() {
+
     }
 
-    override fun showMessage(message: String) {
-
+    override fun hideLoading() {
     }
 
     val random = Random()

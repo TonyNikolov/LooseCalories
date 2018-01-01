@@ -1,6 +1,5 @@
-package com.fatal.loosecalories
+package com.fatal.loosecalories.common
 
-import android.text.TextUtils
 import android.widget.EditText
 
 

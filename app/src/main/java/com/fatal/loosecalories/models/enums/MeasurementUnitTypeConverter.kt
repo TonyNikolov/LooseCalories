@@ -1,6 +1,5 @@
 package com.fatal.loosecalories.models.enums
 
-import com.fatal.loosecalories.models.Food
 import io.objectbox.converter.PropertyConverter
 
 /**

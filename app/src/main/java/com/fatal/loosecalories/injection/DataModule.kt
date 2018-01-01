@@ -6,7 +6,7 @@ import com.fatal.loosecalories.App
 import com.fatal.loosecalories.data.LooseData
 import com.fatal.loosecalories.data.local.LocalData
 import com.fatal.loosecalories.data.remote.RemoteService
-import com.fatal.loosecalories.models.MyObjectBox
+import com.fatal.loosecalories.models.entities.MyObjectBox
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
