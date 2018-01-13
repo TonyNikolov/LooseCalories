@@ -88,6 +88,12 @@ class CreateFoodDialogFragment : BaseDialogFragment(), IView.CreateDialogFragmen
         compositeDisposable.add(presenter.uiModelObservable.observeOn(AndroidSchedulers.mainThread()).subscribe(this::render))
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        compositeDisposable.dispose()
+    }
+
     private fun setupUI() {
         et_dialog_create_food_calories.isEnabled = false
         adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item, items)

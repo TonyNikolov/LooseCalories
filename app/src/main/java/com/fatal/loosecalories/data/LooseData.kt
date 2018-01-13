@@ -22,4 +22,8 @@ class LooseData(private val localData: LocalData, private val remoteService: Rem
     override fun pushFood(food: Food): Flowable<Long> {
         return localData.pushFood(food)
     }
+
+    fun pushDailyFood2(dailyFood: DailyFood) {
+        return localData.pushDailyFood2(dailyFood)
+    }
 }

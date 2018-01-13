@@ -19,7 +19,6 @@ internal class AppModule(private val app: App) {
     @Singleton
     fun provideApp() = app
 
-
     @Provides
     @Singleton
     fun providesApplicationContext(): Context = app
@@ -30,11 +29,7 @@ internal class AppModule(private val app: App) {
     @Provides
     fun providesSchedulers(): DefaultScheduler = DefaultScheduler
 
-
     @Provides
     @Singleton
-    fun providesGson(): Gson =
-            GsonBuilder()
-                    .serializeNulls()
-                    .create()
+    fun providesGson(): Gson = GsonBuilder().serializeNulls().create()
 }

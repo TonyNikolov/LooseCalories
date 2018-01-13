@@ -1,4 +1,4 @@
-package com.fatal.loosecalories.common
+package com.fatal.loosecalories.common.chart
 
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.formatter.IAxisValueFormatter

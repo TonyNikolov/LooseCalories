@@ -19,9 +19,9 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.add_daily_food_fragment.*
-import kotlinx.android.synthetic.main.dialog_create_food_fragment.*
 import java.util.*
 import javax.inject.Inject
+
 
 /**
  * Created by fatal on 11/4/2017.
@@ -54,24 +54,24 @@ class AddDailyFoodFragment : BaseFragment(), IView.AddDailyFoodFragment {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-//        App.graph.inject(this)
-
         presenter = ViewModelProviders.of(this, viewModelFactory).get(AddDailyFoodFragmentPresenter::class.java)
-
 
         val uiEvents: Observable<PushDailyFoodEvent> = btn_add_daily_food_fragment_add_food
                 .clicks()
                 .takeWhile { true }
                 .map {
-                    LogUtils.log(BASIC_TAG, "map btnSaveFood clicks()")
-                    PushDailyFoodEvent(dailyFood = DailyFood("asd", rand(1, 30).toFloat(), rand(1, 30).toFloat(), rand(1, 30).toFloat()))
+                    PushDailyFoodEvent(dailyFood = DailyFood(name ="asd", protein = rand(1, 30).toFloat(), carbs = rand(1, 30).toFloat(), fats = rand(1, 30).toFloat()))
                 }
 
         compositeDisposable.add(uiEvents.subscribe { presenter.pushDailyFood(it) })
-        // TODO
         compositeDisposable.add(presenter.uiModelObservable.observeOn(AndroidSchedulers.mainThread()).subscribe(this::render))
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        compositeDisposable.dispose()
+    }
 
     private fun render(uiModel: AddDailyFoodFragmentUiModel) {
         if (uiModel.inProgress) {
@@ -97,9 +97,9 @@ class AddDailyFoodFragment : BaseFragment(), IView.AddDailyFoodFragment {
     override fun hideLoading() {
     }
 
-    val random = Random()
+    private val random = Random()
 
-    fun rand(from: Int, to: Int): Int {
+    private fun rand(from: Int, to: Int): Int {
         return random.nextInt(to - from) + from
     }
 }

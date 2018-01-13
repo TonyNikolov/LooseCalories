@@ -16,11 +16,9 @@ data class PushFoodResult(val inProgress: Boolean = false,
                           val error: Throwable? = null,
                           val id: Long? = null) : Results()
 
-
 data class GetDailyFoodResult(val inProgress: Boolean = false,
                               val error: Throwable? = null,
                               val dailyFoods: BarData? = null) : Results()
-
 
 data class PushDailyFoodResult(val inProgress: Boolean = false,
                           val error: Throwable? = null,

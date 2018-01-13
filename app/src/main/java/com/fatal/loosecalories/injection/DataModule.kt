@@ -24,7 +24,7 @@ import javax.inject.Singleton
 @Module
 class DataModule {
 
-    fun getOkHttpBuilder(): OkHttpClient.Builder =
+    private fun getOkHttpBuilder(): OkHttpClient.Builder =
             OkHttpClient.Builder()
                     .addInterceptor(HttpLoggingInterceptor()
                             .apply { HttpLoggingInterceptor.Level.BODY }
@@ -32,9 +32,7 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun providesOkHttpClient(app: App): OkHttpClient {
-        val connectivityManager = app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
+    fun providesOkHttpClient(): OkHttpClient {
         return getOkHttpBuilder()
                 .addInterceptor { chain ->
                     val requestBuilder = chain.request().newBuilder()

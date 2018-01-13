@@ -21,7 +21,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center_horizontal|center_vertical"
                 style="?android:attr/progressBarStyleLarge"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/activity_main"

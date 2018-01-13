@@ -6,8 +6,9 @@ import android.support.v4.content.ContextCompat
 import android.util.Log
 import com.fatal.loosecalories.IPresenter
 import com.fatal.loosecalories.R
+import com.fatal.loosecalories.Utils.LogUtils
 import com.fatal.loosecalories.Utils.Util
-import com.fatal.loosecalories.common.ValueFormatter
+import com.fatal.loosecalories.common.chart.ValueFormatter
 import com.fatal.loosecalories.data.DefaultScheduler
 import com.fatal.loosecalories.data.LooseData
 import com.fatal.loosecalories.models.*
@@ -33,20 +34,19 @@ import javax.inject.Inject
  */
 class ChartFragmentPresenter @Inject constructor(
         private val context: Context,
-        private val looseData: LooseData,
-        private val scheduler: DefaultScheduler) : BasePresenter(), IPresenter.ChartFragment {
+        public val looseData: LooseData,
+        public val scheduler: DefaultScheduler) : BasePresenter(), IPresenter.ChartFragment {
 
-    private val BASIC_TAG = ChartFragmentPresenter::javaClass.name
+    private val BASIC_TAG = " chartFragment "+ChartFragmentPresenter::class.java.name
     private val subscriptions: DataSubscriptionList = DataSubscriptionList()
     private var currentState = ChartFragmentUiModel(null, false, null)
     private val uiEvents: PublishProcessor<Events> = PublishProcessor.create<Events>()
 
     private val dailyFoodObserver: DataObserver<List<DailyFood>> = DataObserver {
-        //        addFoodToBarData(it)
+        val TAG = Util.stringsToPath(BASIC_TAG, " dailyFoodObserver")
+        LogUtils.log(TAG, " onData")
 
-        Log.i("dailyFoodsCount", " result")
         uiEvents.onNext(GetFoodEvent(it))
-//        showChart()
     }
 
     private val uiEventTransformer: FlowableTransformer<Events, ChartFragmentUiModel>
@@ -64,7 +64,7 @@ class ChartFragmentPresenter @Inject constructor(
     }
 
     private val pushFoodTransformer: FlowableTransformer<GetFoodEvent, Results> = FlowableTransformer { event ->
-        val TAG = Util.stringsToPath(BASIC_TAG, "pushFoodTransformer")
+        val TAG = Util.stringsToPath(BASIC_TAG, " pushFoodTransformer")
         event.takeWhile { Util.isListNotEmpty(it.dailyFoods) }
                 .map { addFoodToBarData(it.dailyFoods) }
                 .flatMap {
@@ -74,12 +74,21 @@ class ChartFragmentPresenter @Inject constructor(
     }
 
     val uiModelObservable: Flowable<ChartFragmentUiModel>
+
     init {
-        val TAG = Util.stringsToPath(BASIC_TAG, "uiModelObservable")
         uiModelObservable =
                 uiEvents.compose(uiEventTransformer)
                         .replay(1)
                         .autoConnect()
+                        .doOnSubscribe {
+                            val TAG = Util.stringsToPath(BASIC_TAG, " uiModelObservable")
+                            LogUtils.log(TAG, " doOnSubscribe called")
+                            getFoodLocal()
+                        }
+                        .doOnEach {
+                            val TAG = Util.stringsToPath(BASIC_TAG, " uiModelObservable")
+                            LogUtils.log(TAG, " onEach called")
+                        }
     }
 
     fun getFoodLocal() {

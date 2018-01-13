@@ -1,4 +1,4 @@
-package com.fatal.loosecalories.common
+package com.fatal.loosecalories.common.chart
 
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.utils.ViewPortHandler
